@@ -1,0 +1,30 @@
+{# empty Twig template #}
+
+<head>
+<title>Список twig</title>
+
+<link rel="stylesheet" href="index.css">
+</head>
+{% for row in dataARR %}
+<div class='table'>
+    <div class='tr'>
+<div class='td_id'> {{row.id}} </div>
+<div class='td_name'> {{row.name}} </div>
+<div class='td_city'><div class='hide_city'>{{row.city_id}}</div>
+<select class='hide_list'>
+    <option selected value="Город не выбран">Город не выбран</option>
+      {% for city in cityList %}
+          <option {% if city.id == row.city_id %}selected{% endif %} value="{{city.id}}" >{{city.city}}</option>
+      {% endfor %}
+</select>
+
+</div>
+<div class='td_age'> {{row.age}} </div>
+</div></div>
+
+{% endfor %}
+
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="/js/edit.js"></script>
+</body>

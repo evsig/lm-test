@@ -1,0 +1,42 @@
+    .table{
+        overflow:hidden;
+        width:313px;
+    }
+    .table:nth-child(odd)
+    {
+      background-color: lightgray;
+    }
+    .input_tr{
+        width: 149px;
+    }
+    .tr{
+        white-space:nowrap;
+        overflow: hidden;
+    }
+    .td_id {
+        width: 30px;
+    }
+    .td_name {
+        width: 150px;
+    }
+    .td_city {
+        width: 95px;
+    }
+    .td_age {
+        width: 30px;
+    }
+    .td_age,
+    .td_city,
+    .td_name,
+    .td_id{
+        border: 1px solid black;
+        float:left;
+        min-height:20px;
+    }
+    .input-mini{
+        width: 149px;
+    }
+    select {
+/*        visibility: hidden;*/
+        width: 95px;
+    }
