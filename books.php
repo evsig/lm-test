@@ -2,7 +2,7 @@
 
 require_once 'DBSQL.php';
 
-class userList {
+class bookList {
     /**метод getUserData()
      * создает объект скл
      * квэри = текст запроса
@@ -11,17 +11,17 @@ class userList {
      * возвращает массив myArray
      * @return type
      */
-    public function
-    getUserData() { //метод getUserData()
+    public function getBookData() { //метод getUserData()
         $mysqli = new DBSQL();      //
         $query = "SELECT
-                u.id,
-                u.`name`,
-                c.id as city_id,
-                u.age
+                b.id_book,
+                b.title,
+                id_jenre as id_jenre,
+                b.jenre,
+                b.year
         FROM
-                users_aevsigneev u
-        LEFT JOIN cities_aevsigneev c ON u.city = c.id";
+                books b
+        LEFT JOIN jenres  j ON b.jenre = j.title_jenre";
         // вывод юзера по ид: запрос+WHERE users_aevsigneev.id =" . $id;
         $result = $mysqli->f_query($query);
         $myArray = $mysqli->myFetchArray($result);
@@ -33,28 +33,29 @@ class userList {
      * @param type $city
      * @param type $age
      * @return type
-     */
-    public function addUser($name, $city, $age) {
+**/
+    public function addBook($title, $jenre, $year) {
         $mysqli = new DBSQL();
-        $addText = 'INSERT INTO `users_aevsigneev` (`name`, `city`, `age`)
-                                    VALUES ("' . $name . '","' . $city . '", ' . $age . ')';
+        $addText = 'INSERT INTO `books` (`title`, `jenre`, `year`)
+                                    VALUES ("' . $title . '","' . $jenre . '", ' . $year . ')';
         $result = $mysqli->f_query($addText);
         if (!$result) {
             echo 'error ' . $mysqli->connection->error;
         }
         return $result;
     }
-    
-    public function updateUser($name,$id) {
+
+
+    public function updateBook($title,$id) {
         $mysqli = new DBSQL();
-        $changeText = 'UPDATE `users_aevsigneev` SET `name` = "'.$name.'" WHERE `id` = '.$id;
+        $changeText = 'UPDATE `books` SET `title` = "'.$title.'" WHERE `id` = '.$id;
         $result = $mysqli->f_query($changeText);
         if (!$result) {
             echo 'error ' . $mysqli->connection->error;
         }
         return $result;
     }     
-    
+
 
 //    public function __construct($id = 0) {
 //    

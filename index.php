@@ -4,8 +4,8 @@ mb_internal_encoding("UTF-8");
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-require_once 'users.php';
-require_once 'cities.php';
+require_once 'books.php';
+require_once 'writers.php';
 
 require_once 'lib/Twig/Autoloader.php';
 Twig_Autoloader::register();
@@ -18,13 +18,13 @@ $twig = new Twig_Environment($loader, array(
 $action = $_POST['action']??'not eee';
 $T = $twig->loadTemplate('base.html.twig');
 
-$userObject = new userList(); //создаются объекты
-$cityObject = new cityList();
+$bookObject = new bookList(); //создаются объекты
+$jenreObject = new jenreList();
 
-if ($action == 'UpdName') {
-    $name = $_POST['jname'];
-    $id = $_POST['jid'];
-    $resultUpdate = $userObject->updateUser($name, $id);
+if ($action == 'UpdBook') {
+    $title = $_POST['title'];
+    $id = $_POST['id'];
+    $resultUpdate = $bookObject->updateBook($title, $id);
     if ($resultUpdate) {
         echo 'ok';
     } else {
@@ -36,13 +36,13 @@ if ($action == 'UpdName') {
 
 $table = "<div class='table'>";
 
-$resultUserData = $userObject->getUserData(); //получение данных 
-$resultCity = $cityObject->getCity();
+$resultBookData = $bookObject->getBookData(); //получение данных
+$resultJenre = $jenreObject->getJenre();
 
-array_push($resultCity, ['id'=>0,'city'=>'Город не выбран']);
+array_push($resultJenre, ['id_jenre'=>0,'title_jenre'=>'Город не выбран']);
 
-$name = '';
-$age = '';
+$book = '';
+$jenre = '';
 $errors = [];
 
 
@@ -55,11 +55,6 @@ function clean($value = "") {
     return $value;
 }
 
-if (isset($_GET["ab"]) && $_GET["ab"] == 'success') {
-    echo "string $row was added";
-} elseif(isset($_GET["ab"]) && $_GET["ab"] != 'success') {
-    echo "string not was added";
-} 
 
 //foreach ($resultUserData as $row) {
 // $table .= "<div class='tr'>";
@@ -76,8 +71,8 @@ if (isset($_GET["ab"]) && $_GET["ab"] == 'success') {
 //var_dump($resultUserData);
 //var_dump($resultCity);
 //exit;
-$T->display(['dataARR'=>$resultUserData,
-             'cityList'=>$resultCity]);
+$T->display(['dataARR'=>$resultBookData,
+             'jenreList'=>$resultJenre]);
 
 
 
@@ -91,56 +86,54 @@ $T->display(['dataARR'=>$resultUserData,
 //    ]);
 //}
 
-if (isset($_POST["name"])) {
+if (isset($_POST["title"])) {
 
-    $name=clean($_POST["name"]);
-    $city=$_POST["city"];
-    $age = $_POST['age'];
+    $title=clean($_POST["title"]);
+    $jenre=$_POST["jenre"];
+    $year = $_POST['year'];
     $errors = array();
 
-        if ($name == ''){
+        if ($title == ''){
             $errors[] = array(
-                "field" => "name",
+                "field" => "title",
                 "message" => "Поле Имя не заполнено");
         }else{
-            if (!preg_match('/^[a-zA-Zа-яА-Я]+$/u', $name)){ //проверка на ввод допустимых символов
+            if (!preg_match('/^[a-zA-Zа-яА-Я]+$/u', $title)){ //проверка на ввод допустимых символов
                 $errors[] = array(
-                    "field" => "name",
+                    "field" => "title",
                     "message" => "Поле должно содержать только кириллические и латинские буквы"
                 );
             }
         }
-        if ($age == ''){
+        if ($year == ''){
             $errors[] = array(
-                "field" => "age",
-                "message" => "Поле Возраст не заполнено");
+                "field" => "year",
+                "message" => "Поле год не заполнено");
         }else {
-            if (filter_input(INPUT_POST, 'age', FILTER_VALIDATE_INT)) {
-                if (!($age >= 10 && $age <= 100)) {
+            if (filter_input(INPUT_POST, 'year', FILTER_VALIDATE_INT)) {
+                if (!($year >= 1900 && $year <= 2019)) {
                     $errors[] = array(
-                        "field" => "age",
-                        "message" => "Введенный возраст некорректен");
+                        "field" => "year",
+                        "message" => "Введенный год некорректен");
                 }
             } else {
                 $errors[] = array(
-                    "field" => "age",
-                    "message" => "Возраст должен быть числом");
+                    "field" => "year",
+                    "message" => "Год должен быть числом");
             }
         }
-        if ($city == '0'){
+        if ($jenre == '0'){
             $errors[] = array(
-                "field" => "city",
+                "field" => "jenre",
                 "message" => "Город не выбран");
         }
 
         if(!count($errors)){
             
-            $resultInsert = $userObject->addUser($name, $city, $age);
-            $resultUpdate = $userObject->updateUser($name);
+            $resultInsert = $bookObject->addBook($title, $jenre, $year);
+            $resultUpdate = $bookObject->updateBook($title);
             
             echo "Строка успешно добавлена";
-            header('Location: /index.php?ab=success');
-            exit;
         }
 }
 
@@ -153,32 +146,3 @@ if (isset($_POST["name"])) {
 //}
 
 ?>
-<!--
-<FORM ACTION="index.php" METHOD="POST">
-<INPUT TYPE="text" name="name" value="<? echo $name; ?>"><br>
-    <select name="city">
-        <option value="0">Выберите город</option>
-        <?
-//$myArray=$mysqli->myFetchArray($resultCity);
-foreach ($resultCity as $row_city) {
-            ?>
-            <option value="<?=$row_city['id']?>"><?=$row_city['city']?></option>
-            <?
-        }
-        ?>
-    </select><br>
-<INPUT TYPE="text" name="age" value="<?php echo $age; ?>"><p>
-<INPUT TYPE="submit" value="Ввод">
-<INPUT TYPE="submit" value="Проверка AJAX">
-</FORM>
-
-<? if(count($errors)){ ?>
-    Не все ошибки исправлены:
-<ul>
-    <? foreach ($errors as $error) { ?>
-        <li><? echo $error['message']; ?></li>
-    <? } ?>
-</ul>
-<? } ?>
-</body>
-</html>-->

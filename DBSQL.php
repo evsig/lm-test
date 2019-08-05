@@ -5,9 +5,10 @@ class DBSQL {
 
     public function __construct() {
         $host = '127.0.0.1';
-        $database = 'test';
-        $user = 'stager';
-        $password = 'stager';
+        $database = 'db_books';
+        $user = 'evs1g';
+        $password = 'evs1g';
+        $port = '3306';
 
 //        $link = mysqli_connect($host, $user, $password, $database);
 //        if (!$link) {
@@ -17,7 +18,7 @@ class DBSQL {
 //            exit;
 //        }
 
-        $this->connection = new mysqli("127.0.0.1", "stager", "stager", "test");
+        $this->connection = new mysqli($host,$user,$password,$database,$port);
     }
 
     public function f_query($queryText) {
